@@ -12,12 +12,12 @@ var campgroundRoutes = require("./routes/campgrounds"),
     commentRoutes = require("./routes/comments"),
     authRoutes = require("./routes/index");
 
-mongoose.connect("mongodb://localhost/yelp_camp_v4");
+// setup
+mongoose.connect("mongodb://localhost/bivouac");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-seedDB();
-
+// seedDB();
 
 // Passport config
 app.use(require("express-session")({

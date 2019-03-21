@@ -3,6 +3,7 @@ var router = express.Router({mergeParams: true}); // gives access to :id param f
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
 
+// show new comment form
 router.get("/new", isLoggedIn, function (req, res) {
     // find campground by id
     Campground.findById(req.params.id, function (err, campground) {
@@ -14,6 +15,7 @@ router.get("/new", isLoggedIn, function (req, res) {
     })
 });
 
+// handle comment post
 router.post("/", isLoggedIn, function (req, res) {
     //lookup campground using ID
     Campground.findById(req.params.id, function (err, campground) {
@@ -25,8 +27,11 @@ router.post("/", isLoggedIn, function (req, res) {
                 if (err) {
                     console.log(err);
                 } else {
-                    campground.comments.push(comment);
-                    campground.save();
+                    comment.author.id = req.user._id;
+                    comment.author.username = req.user.username;
+                    comment.save();
+                    campground.comments.push(comment); 
+                    campground.save(); 
                     res.redirect('/campgrounds/' + campground._id);
                 }
             });
@@ -34,6 +39,7 @@ router.post("/", isLoggedIn, function (req, res) {
     });
 });
 
+// middleware
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
