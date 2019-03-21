@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Campground = require("../models/campground");
+var Comment = require("../models/comment");
 
 // show all campgrounds
 router.get("/", function (req, res) {
@@ -24,9 +25,9 @@ router.post("/", isLoggedIn, function (req, res) {
         id: req.user._id,
         username: req.user.username
     };
-    var newCampground = { 
-        name: name, 
-        image: image, 
+    var newCampground = {
+        name: name,
+        image: image,
         description: desc,
         author: author
     }
@@ -60,19 +61,15 @@ router.get("/:id", function (req, res) {
 });
 
 // show edit campground form
-router.get("/:id/edit", function(req, res) {
-    Campground.findById(req.params.id, function(err, foundCampground) {
-        if (err) {
-            res.redirect("/campgrounds");
-        } else {
-            res.render("campgrounds/edit", {campground: foundCampground});
-        }
+router.get("/:id/edit", isOwner, function (req, res) {
+    Campground.findById(req.params.id, function (err, foundCampground) {
+        res.render("campgrounds/edit", { campground: foundCampground });
     });
 });
 
 // update campground from edit form
-router.put("/:id", function(req, res) {
-    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground) {
+router.put("/:id", function (req, res) {
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function (err, updatedCampground) {
         if (err) {
             res.redirect("/campgrounds");
         } else {
@@ -82,26 +79,45 @@ router.put("/:id", function(req, res) {
 });
 
 // delete campground
-router.delete("/:id", function(req, res) {
-    Campground.findByIdAndRemove(req.params.id, function(err, campgroundRemoved) {
+router.delete("/:id", function (req, res) {
+    Campground.findByIdAndRemove(req.params.id, function (err, campgroundRemoved) {
         if (err) {
             console.log(err);
         }
-        Comment.deleteMany({_id:{$in: campgroundRemoved.comments}}, function(err) {
+        Comment.deleteMany({ _id: { $in: campgroundRemoved.comments } }, function (err) {
             if (err) {
                 console.log(err);
             }
             res.redirect("/campgrounds");
         });
-    })
-})
+    });
+});
 
-// middleware
+// --- helper middleware ---
+
 function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
         return next();
     }
     res.redirect("/login");
 };
+
+function isOwner(req, res, next) {
+    if (req.isAuthenticated()) {
+        Campground.findById(req.params.id, function (err, foundCampground) {
+            if (err) {
+                res.redirect("back"); // atypical case
+            } else {
+                if (foundCampground.author.id.equals(req.user._id)) { // comparing object vs string with mongoose
+                    next();
+                } else {
+                    res.redirect("back");
+                }
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
+}
 
 module.exports = router;
