@@ -49,7 +49,7 @@ router.get("/new", isLoggedIn, function (req, res) {
 // show more info about one campground
 router.get("/:id", function (req, res) {
     //find the campground with provided ID
-    Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) {
+    Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) { // this is weird.
         if (err) {
             console.log(err);
         } else {
@@ -58,6 +58,43 @@ router.get("/:id", function (req, res) {
         }
     });
 });
+
+// show edit campground form
+router.get("/:id/edit", function(req, res) {
+    Campground.findById(req.params.id, function(err, foundCampground) {
+        if (err) {
+            res.redirect("/campgrounds");
+        } else {
+            res.render("campgrounds/edit", {campground: foundCampground});
+        }
+    });
+});
+
+// update campground from edit form
+router.put("/:id", function(req, res) {
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground) {
+        if (err) {
+            res.redirect("/campgrounds");
+        } else {
+            res.redirect("/campgrounds/" + req.params.id);
+        }
+    })
+});
+
+// delete campground
+router.delete("/:id", function(req, res) {
+    Campground.findByIdAndRemove(req.params.id, function(err, campgroundRemoved) {
+        if (err) {
+            console.log(err);
+        }
+        Comment.deleteMany({_id:{$in: campgroundRemoved.comments}}, function(err) {
+            if (err) {
+                console.log(err);
+            }
+            res.redirect("/campgrounds");
+        });
+    })
+})
 
 // middleware
 function isLoggedIn(req, res, next) {
