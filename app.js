@@ -6,7 +6,8 @@ var express = require("express"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
     methodOverride = require("method-override");
-    User = require("./models/user")
+    User = require("./models/user"),
+    mongodb = require('mongodb')
     // seedDB = require("./seeds");
 
 // routes
@@ -15,11 +16,11 @@ var campgroundRoutes = require("./routes/campgrounds"),
     authRoutes = require("./routes/index");
 
 require('dotenv').config();
-
 // setup
 // mongoose.connect("mongodb://localhost/bivouac");
 const connectionString = process.env.MONGOLAB_URI;
-mongoose.connect(connectionString);
+console.log(connectionString);
+mongoose.connect(connectionString)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -51,6 +52,7 @@ app.use("/campgrounds/", campgroundRoutes);
 app.use("/campgrounds/:id/comments/", commentRoutes);
 app.use("/", authRoutes);
 
-app.listen(3000, process.env.IP, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("The Bivouac Server Has Started!");
 });
+
