@@ -53,25 +53,19 @@ router.get("/new", middleware.isLoggedIn, function (req, res) {
 router.get("/:id", function (req, res) {
     //find the campground with provided ID
     Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) { // this is weird.
-        if (err) {
-            req.flash("error", "Not found.");
+        if (err || !foundCampground) {
             console.log(err);
-        } else {
-            //render show template with that campground
-            res.render("campgrounds/show", { campground: foundCampground });
+            req.flash("error", "Not found.");
+            return res.redirect('/campgrounds');
         }
+        //render show template with that campground
+        res.render("campgrounds/show", { campground: foundCampground });
     });
 });
 
 // show edit campground form
-router.get("/:id/edit", middleware.isCampgroundOwner, function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCampground) {
-        if (err) {
-            req.flash("error", "Not found.");
-            console.log(err);
-        }
-        res.render("campgrounds/edit", { campground: foundCampground });
-    });
+router.get("/:id/edit", middleware.isLoggedIn, middleware.isCampgroundOwner, function (req, res) {
+    res.render("campgrounds/edit", { campground: req.campground });
 });
 
 // update campground from edit form

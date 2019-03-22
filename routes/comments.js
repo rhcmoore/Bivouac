@@ -43,20 +43,13 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
 });
 
 // display edit comment form
-router.get("/:comment_id/edit", middleware.isCommentOwner, function (req, res) {
-    Comment.findById(req.params.comment_id, function (err, foundComment) {
-        if (err) {
-            res.redirect("back");
-        } else {
-            // we have access to campground id with req.params.id
-            res.render("comments/edit", { campground_id: req.params.id, comment: foundComment });
-        }
-    });
+router.get("/:comment_id/edit", middleware.isLoggedIn, middleware.isCommentOwner, function (req, res) {
+    res.render("comments/edit", { campground_id: req.params.id, comment: req.comment });
 });
 
 // handle comment update
-router.put("/:comment_id", middleware.isCommentOwner, function(req, res) {
-    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment) {
+router.put("/:comment_id", middleware.isCommentOwner, function (req, res) {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function (err, updatedComment) {
         if (err) {
             res.redirect("back");
         } else {
