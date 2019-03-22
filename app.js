@@ -14,8 +14,12 @@ var campgroundRoutes = require("./routes/campgrounds"),
     commentRoutes = require("./routes/comments"),
     authRoutes = require("./routes/index");
 
+require('dotenv').config();
+
 // setup
-mongoose.connect("mongodb://localhost/bivouac");
+// mongoose.connect("mongodb://localhost/bivouac");
+const connectionString = "mongodb+srv://rhcmoore:" + process.env.CONNECTION_STRING + "@bivouaccluster-oje5g.mongodb.net/test?retryWrites=true";
+mongoose.connect(connectionString);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
