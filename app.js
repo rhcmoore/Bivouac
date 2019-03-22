@@ -18,7 +18,7 @@ require('dotenv').config();
 
 // setup
 // mongoose.connect("mongodb://localhost/bivouac");
-const connectionString = "mongodb+srv://rhcmoore:" + process.env.CONNECTION_STRING + "@bivouaccluster-oje5g.mongodb.net/test?retryWrites=true";
+const connectionString = process.env.MONGOLAB_URI;
 mongoose.connect(connectionString);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
