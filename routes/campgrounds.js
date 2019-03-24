@@ -45,16 +45,18 @@ router.get("/", function (req, res) {
     var pageNumber = pageQuery ? pageQuery : 1;
     // Get all campgrounds from DB
     Campground.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("campgrounds/index", { 
-                campgrounds: allCampgrounds, 
-                currentUser: req.user,
-                current: pageNumber,
-                pages: Math.ceil(count / perPage)
-            });
-        }
+        Campground.count().exec(function (err, count) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("campgrounds/index", { 
+                    campgrounds: allCampgrounds, 
+                    currentUser: req.user,
+                    current: pageNumber,
+                    pages: Math.ceil(count / perPage)
+                });
+            }
+        });
     });
 });
 
