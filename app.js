@@ -27,6 +27,9 @@ app.use(methodOverride("_method"));
 app.use(flash()); 
 // seedDB();
 
+// make moment.js available in all view files as var moment
+app.locals.moment = require("moment");
+
 // Passport config
 app.use(require("express-session")({
     secret: "Secret here",
