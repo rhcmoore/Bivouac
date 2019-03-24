@@ -39,12 +39,21 @@ cloudinary.config({
 
 // show all campgrounds
 router.get("/", function (req, res) {
+    // for pagination
+    var perPage = 8;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
     // Get all campgrounds from DB
-    Campground.find({}, function (err, allCampgrounds) {
+    Campground.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
         if (err) {
             console.log(err);
         } else {
-            res.render("campgrounds/index", { campgrounds: allCampgrounds, currentUser: req.user });
+            res.render("campgrounds/index", { 
+                campgrounds: allCampgrounds, 
+                currentUser: req.user,
+                current: pageNumber,
+                pages: Math.ceil(count / perPage)
+            });
         }
     });
 });
@@ -60,13 +69,15 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
         id: req.user._id,
         username: req.user.username
     };
+    // geocoding for map
     geocoder.geocode(req.body.location, function (err, data) {
         if (err || !data.length) {
             console.log(err);
             req.flash('error', 'Invalid address');
             return res.redirect('back');
         }
-        cloudinary.uploader.upload(req.file.path, function(result) { // image upload
+        // image upload
+        cloudinary.uploader.upload(req.file.path, function(result) { 
             var lat = data[0].latitude;
             var lng = data[0].longitude;
             var location = data[0].formattedAddress;
@@ -118,6 +129,7 @@ router.get("/:id/edit", middleware.isLoggedIn, middleware.isCampgroundOwner, fun
 });
 
 // update campground from edit form
+// need to update this with the image upload functionality
 router.put("/:id", middleware.isCampgroundOwner, function (req, res) {
     geocoder.geocode(req.body.location, function (err, data) {
         if (err || !data.length) {
