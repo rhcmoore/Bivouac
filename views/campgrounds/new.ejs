@@ -3,7 +3,7 @@
     <div class="row">
         <h1 style="text-align: center">Create a New Campground</h1>
         <div style="width: 30%; margin: 25px auto;">
-            <form action="/campgrounds" method="POST">
+            <form action="/campgrounds" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Site</label>
                     <input class="form-control" type="text" name="name" placeholder="Upper Falls tent spot">
@@ -14,8 +14,12 @@
                 </div>
                 <div class="form-group">
                     <label for="image">Image</label>
-                    <input class="form-control" type="text" name="image" placeholder="i.imgur.com/qFD0hJg.gifv">
+                    <input type="file" id="image" name="image" accept="image/*" required>
                 </div>
+                <!-- <div class="form-group">
+                    <label for="image">Image</label>
+                    <input class="form-control" type="text" name="image" placeholder="something.jpg">
+                </div> -->
                 <div class="form-group">
                     <label for="description">Description</label>
                     <input class="form-control" type="text" name="description" placeholder="Secluded space for 2-3 tents">
