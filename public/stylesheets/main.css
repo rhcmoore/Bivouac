@@ -38,10 +38,14 @@
     margin: 8px;
 }
 
-.jumbotron {
+.jumbotron-fluid {
     color: white;
     background-color: #473E3F;
     font-family: 'KoHo', sans-serif;
+    margin-bottom: 20px;
+}
+.jumbo-text {
+    padding: 40px;
 }
 
 .btn-large, .btn-primary {
@@ -58,4 +62,13 @@
 
 .campground-card:hover {
     border-bottom: 4px solid #218C8D;
+}
+
+.container-display {
+    background-image: url("https://i.imgur.com/5VHwVfQ.jpg");
+    margin: 0px;
+}
+
+.log-screen {
+    margin: 40px;
 }
