@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 .thumbnail img {
     width: 100%;
 }
@@ -17,4 +22,40 @@
 #map {
     height: 400px;
     width: 100%;
+}
+
+.navbar {
+    background-color: #218C8D;
+    color: white;
+    border: none;
+    border-radius: 0px;
+}
+.nav-link {
+    color: white !important;
+}
+
+.navbar-header {
+    margin: 8px;
+}
+
+.jumbotron {
+    color: white;
+    background-color: #473E3F;
+    font-family: 'KoHo', sans-serif;
+}
+
+.btn-large, .btn-primary {
+    background-color: #218C8D;
+    border: none;
+    border-radius: 0;
+}
+
+.campground-card, .comment-card {
+    border-radius: 0;
+    font-family: 'KoHo', sans-serif;
+    border-bottom: 4px solid #EF7126;
+}
+
+.campground-card:hover {
+    border-bottom: 4px solid #218C8D;
 }

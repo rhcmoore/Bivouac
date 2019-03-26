@@ -55,6 +55,6 @@ app.use("/campgrounds/:id/comments/", commentRoutes);
 app.use("/", authRoutes);
 
 app.listen(process.env.PORT || 3000, function () {
-    console.log("The Bivouac Server Has Started!");
+    console.log("The Bivouak Server Has Started!");
 });
 

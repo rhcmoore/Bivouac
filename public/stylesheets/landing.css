@@ -80,3 +80,14 @@ body {
 .no-cssanimations .slideshow li {
 	opacity: 1;
 }
+
+.title-tag {
+  font-family: 'KoHo', sans-serif;
+  font-size: 64px;
+}
+.btn {
+  background-color: #218C8D4F;
+  color: white;
+  border-radius: 0px;
+  padding: 5px 25px;
+}
